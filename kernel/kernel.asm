@@ -4,20 +4,39 @@ global _start
 
 _start:
     mov si, msg
-
-print:
-    mov al, [si]
-    cmp al, 0
-    je hang
-
-    mov ah, 0x0e
-    int 0x10
-
-    inc si
-    jmp print
+    call print_string
 
 hang:
     hlt
     jmp hang
 
-msg db "Kernel loaded successfully", 0
+; ------------------
+; print_string
+; SI = address of 0-terminated string
+; -----------------
+print_string:
+    mov ax, 0xb800
+    mov es, ax
+
+    xor bx, bx ; usin it as a counter
+
+.loop:
+    mov al, [si]
+    cmp al, 0
+    je .done
+
+    mov ah, 0x07
+
+    mov [es:bx], ax
+
+    inc si
+    add bx, 2
+    jmp .loop
+
+.done:
+    ret
+
+; -----------------
+; data
+; ----------------
+msg: db "MEHMET KANKER KERNEL", 0
