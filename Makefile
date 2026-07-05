@@ -53,7 +53,7 @@ $(OS_IMAGE): $(BOOT_BIN) $(KERNEL_BIN)
 
 # ===== Run in QEMU =====
 run: $(OS_IMAGE)
-	qemu-system-x86_64 -drive format=raw,file=$(OS_IMAGE)
+	qemu-system-x86_64 -drive format=raw,file=$(OS_IMAGE) -d cpu_reset -no-reboot
 
 # ===== Clean =====
 clean:

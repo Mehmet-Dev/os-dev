@@ -15,10 +15,11 @@ cleanup:
     mov fs, ax
     mov gs, ax
 
-    mov ss, ax          ; stack segment = 0
-    mov sp, 0x7C00      ; stack below bootloader
-
+    mov ax, 0x9000
+    mov ss, ax
+    mov sp, 0xffff
     cld                 ; clear direction flag
+    sti
 
 ; label for printing loop
 clear_screen:
@@ -37,14 +38,14 @@ clear_screen:
 ; we load the kernel.asm from here (lives right next to 512 byte boot sector)
 kernel_read_setup:
     mov ah, 2 ; function 2 of interrupt 13
-    mov al, 8 ; read only 1 sector for now
+    mov al, 15 ; read only 1 sector for now
     mov ch, 0 ; from cylinder 0
     mov cl, 2 ; second sector starts from 1
     mov dh, 0 ; idk bro 
 
     xor bx, bx ; sets to 0
     mov es, bx ; set to 0 from earlier
-    mov bx, 0x1000 ; starts at address 1000 i guess
+    mov bx, 0x7e00 ; starts at address 1000 i guess
 
 read_kernel:
     mov dl, [drive_number] ; chatgpt fuck you
@@ -56,7 +57,7 @@ read_kernel:
     jmp read_kernel ; retry
 
 jump_to_kernel:
-    jmp 0x1000 ; FUCK FUCK FUCK
+    jmp 0x0000:0x7e00 ; FUCK FUCK FUCK
 
 ; label for drive number saving
 drive_number:
