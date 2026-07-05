@@ -53,6 +53,8 @@ gdt_descriptor:
 ; landing zone
 ; =============
 bits 32
+extern kernel_main ; proving the existence of kernel.c (and that it smells like shit)
+
 protected_mode_start:
     mov ax, 0x10 ; points to gdt data segment
     mov ds, ax ; updating all data segment selectors
@@ -60,23 +62,19 @@ protected_mode_start:
     mov es, ax
     mov fs, ax
     mov gs, ax
-    
+
+    cld ; clearing direction flag
+
     ; update stack pointer
     mov esp, 0x90000
 
-    ; =========================================================================
-    ; PROOF OF LIFE: Write 'P' for Protected Mode directly to VGA memory
-    ; =========================================================================
-    ; In a flat memory model, VGA text mode memory is always at 0xb8000.
-    ; We will write to the very top-right corner of the screen so it doesn't
-    ; overwrite your 16-bit startup messages.
-    
-    mov esi, second_msg
-    call print_string
+    call kernel_main
 
-    ; THE BEGINNING (Spin forever)
-    jmp $
-
+    ; if it ever gets out of kernel_main just idk poop yourself
+.halt:
+    cli
+    hlt
+    jmp .halt
 ; -------------
 ; resets screen offset and clears screen
 ; ------------------------
@@ -193,6 +191,6 @@ print_string:
 ; ----------------
 msg: db "MEHMET KANKER", 0x0a, "KERNEL",  0
 second_msg: db "DIT IS FUCKING COOL", 0
-current_offset: dd 0
+extern current_offset
 
 
