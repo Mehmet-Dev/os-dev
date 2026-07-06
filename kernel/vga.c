@@ -2,14 +2,19 @@
 
 unsigned int current_offset = 0;
 
-/// Clears the cool screen. Maybe paging? I have no clue
-void clear_screen(void) {
+/// Clears the cool screen and sets it to a color.
+void clear_screen_color(unsigned char color) {
     volatile char* vga_memory = (volatile char*)0xb8000;
 
     for(int i = 0; i < 4000; i+=2) {
         vga_memory[i] = 0x20;
-        vga_memory[i+1] = 0x07;
+        vga_memory[i+1] = color;
     }
+}
+
+// Clears the screen (default)
+void clear_screen(void) {
+    clear_screen_color(0x07);
 }
 
 /// Checks current offset.
