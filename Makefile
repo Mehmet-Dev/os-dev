@@ -6,7 +6,7 @@ LD = ld
 # ===== Flags =====
 ASMFLAGS_BIN = -f bin
 ASMFLAGS_ELF = -f elf32
-CFLAGS = -m32 -ffreestanding -fno-pie -fno-stack-protector -c
+CFLAGS = -m32 -ffreestanding -fno-pie -fno-stack-protector -c -I$(KERNEL_DIR)/headers
 LDFLAGS = -m elf_i386 -T linker.ld --oformat binary
 
 # ===== Directories =====
@@ -17,11 +17,11 @@ BUILD_DIR = build
 # ===== Files =====
 BOOT_SRC = $(BOOT_DIR)/boot.asm
 KERNEL_ASM_SRC = $(KERNEL_DIR)/kernel.asm
-KERNEL_C_SRC = $(KERNEL_DIR)/kernel.c
+KERNEL_C_SRCS = $(wildcard $(KERNEL_DIR)/*.c)
 
 BOOT_BIN = $(BUILD_DIR)/boot.bin
 KERNEL_ASM_OBJ = $(BUILD_DIR)/kernel_asm.o
-KERNEL_C_OBJ = $(BUILD_DIR)/kernel_c.o
+KERNEL_C_OBJS = $(patsubst $(KERNEL_DIR)/%.c, $(BUILD_DIR)/%.o, $(KERNEL_C_SRCS))
 KERNEL_BIN = $(BUILD_DIR)/kernel.bin
 OS_IMAGE = $(BUILD_DIR)/os-image.img
 
@@ -38,14 +38,15 @@ $(KERNEL_ASM_OBJ): $(KERNEL_ASM_SRC)
 	mkdir -p $(BUILD_DIR)
 	$(ASM) $(ASMFLAGS_ELF) $< -o $@
 
-# ===== Kernel Main (C) =====
-$(KERNEL_C_OBJ): $(KERNEL_C_SRC)
+# ===== Kernel C Files (Generic Rule) =====
+# This rule tells Make how to compile ANY .c file it finds into a .o file
+$(BUILD_DIR)/%.o: $(KERNEL_DIR)/%.c
 	mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) $< -o $@
 
 # ===== Link Kernel (ASM + C -> Bin) =====
-$(KERNEL_BIN): $(KERNEL_ASM_OBJ) $(KERNEL_C_OBJ)
-	$(LD) $(LDFLAGS) $(KERNEL_ASM_OBJ) $(KERNEL_C_OBJ) -o $@
+$(KERNEL_BIN): $(KERNEL_ASM_OBJ) $(KERNEL_C_OBJS)
+	$(LD) $(LDFLAGS) $(KERNEL_ASM_OBJ) $(KERNEL_C_OBJS) -o $@
 
 # ===== OS Image =====
 $(OS_IMAGE): $(BOOT_BIN) $(KERNEL_BIN)
