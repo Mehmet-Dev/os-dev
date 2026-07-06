@@ -24,10 +24,6 @@
 
 // 20-31 are reserved by intel for the future
 
-// ===== CUSTOM INTERRUPTS START ===========
-
-// ===== CUSTOM INTERRUPTS END =============
-
 typedef struct {
     unsigned short base_lo; // lower 16 bit of address
     unsigned short selector; // code selector
@@ -35,5 +31,12 @@ typedef struct {
     unsigned char attribute; //flags n shit
     unsigned short base_hi; // higher 16 bits
 } __attribute__((packed)) idt_entry;
+
+typedef struct {
+    unsigned short limit; // size of table minus 1
+    unsigned int base; // the address of idt_entry array
+} __attribute__((packed)) idt_ptr;
+
+void init_idt(void); 
 
 #endif
