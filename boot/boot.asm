@@ -38,7 +38,7 @@ clear_screen:
 ; we load the kernel.asm from here (lives right next to 512 byte boot sector)
 kernel_read_setup:
     mov ah, 2 ; function 2 of interrupt 13
-    mov al, 15 ; read only 1 sector for now
+    mov al, 40 ; read 40 sectors for now
     mov ch, 0 ; from cylinder 0
     mov cl, 2 ; second sector starts from 1
     mov dh, 0 ; idk bro 
