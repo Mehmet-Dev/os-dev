@@ -16,6 +16,10 @@ global isr12;
 global isr13;
 global isr14;
 global isr15;
+global isr16;
+global isr17;
+global isr18;
+global isr19;
 
 isr_common_stub:
     pusha           ; Save all registers
@@ -120,4 +124,27 @@ isr15:
     cli
     push 0      ; Dummy error code
     push 15     ; Interrupt number
+    jmp isr_common_stub
+
+isr16:
+    cli
+    push 0      ; Dummy error code
+    push 16     ; Interrupt number
+    jmp isr_common_stub
+
+isr17:
+    cli
+    push 17
+    jmp isr_common_stub
+
+isr18:
+    cli
+    push 0      ; Dummy
+    push 18
+    jmp isr_common_stub
+
+isr19:
+    cli
+    push 0      ; Dummy
+    push 19
     jmp isr_common_stub

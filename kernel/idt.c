@@ -19,6 +19,10 @@ extern void isr12(void);
 extern void isr13(void);
 extern void isr14(void);
 extern void isr15(void);
+extern void isr16(void);
+extern void isr17(void);
+extern void isr18(void);
+extern void isr19(void);
 
 void idt_set_gate(unsigned char num, void (*handler)(void), unsigned short selector, unsigned char flags) {
     idt_entry entry;
@@ -53,6 +57,10 @@ void init_idt(void) {
     idt_set_gate(GENERAL_PROTECTION_FAULT, isr13, 0x08, 0x8e);
     idt_set_gate(PAGE_FAULT, isr14, 0x08, 0x8e);
     idt_set_gate(15, isr15, 0x08, 0x8e);
+    idt_set_gate(FLOATING_POINT_ERROR, isr16, 0x08, 0x8e);
+    idt_set_gate(ALIGNMENT_CHECK, isr17, 0x08, 0x8e);
+    idt_set_gate(MACHINE_CHECK, isr18, 0x08, 0x8e);
+    idt_set_gate(FLOATING_POINT_EXCEPTION, isr16, 0x08, 0x8e);
 
     __asm__ volatile("lidt %0" : : "m"(idt_p));
 }

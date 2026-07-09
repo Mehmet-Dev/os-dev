@@ -9,11 +9,9 @@
 void kernel_main(void) {
     init_idt();
 
-    // --- TRIGGER FOR ISR 1 (WINDOWS 12 BLUE SCREEN EDITION) ---
     __asm__ volatile (
-        "int $4"
+        "int $19"
     );
-
     print("The idt failed loser");
     // Loop forever right here in C
     while(1) {
