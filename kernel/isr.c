@@ -1,13 +1,6 @@
 #include "headers/vga.h"
 #include "headers/io.h"
 
-typedef struct {
-    unsigned int edi, esi, ebp, esp, ebx, edx, ecx, eax;// PUSHA FUCK
-    unsigned int int_no;
-    unsigned int err_code;
-    unsigned int eip, cs, eflags, useresp, ss; // pushed automatically
-} registers;
-
 void print_hex_color(unsigned int value, unsigned char color) {
     char hex_chars[] = "0123456789ABCDEF";
     char buffer[11];

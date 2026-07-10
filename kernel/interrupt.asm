@@ -1,4 +1,5 @@
 extern fault_handler
+extern irq_handler
 
 global isr0
 global isr1;
@@ -21,6 +22,9 @@ global isr17;
 global isr18;
 global isr19;
 
+global irq0
+global irq1
+
 isr_common_stub:
     pusha           ; Save all registers
     mov eax, esp
@@ -32,6 +36,18 @@ isr_common_stub:
     popa
     add esp, 8      ; Clear the error code AND the interrupt number
     sti
+    iret
+
+irq_common_stub:
+    pusha
+    mov eax, esp
+    push eax
+
+    call irq_handler
+
+    pop eax
+    popa
+    add esp, 8
     iret
 
 ; executes when division by 0
@@ -148,3 +164,18 @@ isr19:
     push 0      ; Dummy
     push 19
     jmp isr_common_stub
+
+
+; Hardware Interrupts section
+
+irq0:
+    cli
+    push 0
+    push 32 ; Interrupt number
+    jmp irq_common_stub
+
+irq1:
+    cli
+    push 0
+    push 33
+    jmp irq_common_stub
