@@ -1,5 +1,6 @@
 #include "headers/io.h"
 #include "headers/vga.h"
+#include "headers/keyboard.h"
 
 volatile unsigned long long timer = 0;
 
@@ -19,15 +20,11 @@ void irq_handler(registers* regs) {
         case 32: // Timer
             timer++;
             break;
-        case 33:
+        case 33: {
             unsigned char scancode = inb(0x60);
-            if(scancode & 0x80) {//keybard release
-
-            }
-            else {
-                put_char(scancode, 0x07);
-            }
+            handle_keypress(scancode);
             break;
+        }
     }
 
     if(regs->int_no >= 40) { // signal from pic slave
