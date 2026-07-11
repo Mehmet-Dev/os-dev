@@ -2,8 +2,8 @@
 
 // global variables
 int shift = 0;
-unsigned char write_index = 0;
-unsigned char read_index = 0;
+volatile unsigned char write_index = 0;
+volatile unsigned char read_index = 0;
 
 unsigned char circular_buffer[256];
 
@@ -59,5 +59,10 @@ void handle_keypress(unsigned char scancode) {
 
 // Getting a char
 char keyboard_getchar() {
+    if(read_index == write_index) return 0;
 
+    char letter = circular_buffer[read_index];
+    read_index++;
+
+    return letter;
 }
