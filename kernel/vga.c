@@ -41,3 +41,11 @@ void put_char(char letter, unsigned char color) {
 
     current_offset += 2;
 }
+
+// Used for deletion in readline().
+void backspace_trigger(void) {
+    volatile char* vga_memory = (volatile char*)0xb8000;
+
+    current_offset -= 2;
+    vga_memory[current_offset] = 0x20;
+}

@@ -1,7 +1,12 @@
 #include "headers/keyboard.h"
+#include "headers/vga.h"
 
 // global variables
-int shift = 0;
+char shift = 0;
+char ctrl = 0;
+char alt = 0;
+
+
 volatile unsigned char write_index = 0;
 volatile unsigned char read_index = 0;
 
@@ -34,6 +39,7 @@ unsigned char keyboard_shift_map[128] = {
 
 // The action of handling a keypress. AMAZING
 void handle_keypress(unsigned char scancode) {
+
     if(scancode == 0x2a || scancode == 0x36) { // if it's a left or right shift click
         shift = 1;
         return;
@@ -58,11 +64,45 @@ void handle_keypress(unsigned char scancode) {
 }
 
 // Getting a char
-char keyboard_getchar() {
+char keyboard_getchar(void) {
     if(read_index == write_index) return 0;
 
     char letter = circular_buffer[read_index];
     read_index++;
 
     return letter;
+}
+
+// Reading a line. Line of coke
+char* readline(char* buffer, unsigned int max_size) {
+    int i = 0;
+
+    while(1) {
+        char letter = keyboard_getchar();
+        
+        if(letter == 0) {
+            __asm__ volatile("hlt");
+            continue;
+        }
+        if(letter == '\n') {
+            buffer[i] = '\0';
+            put_char('\n', 0x07);
+            break;
+        }
+
+        if(letter == '\b') {
+            if(i == 0) continue;
+            backspace_trigger();
+            i--;
+            buffer[i] = '\0';
+            continue;
+        }
+        
+        if(i < max_size - 1) {
+            buffer[i] = letter;
+            put_char(letter, 0x07);
+            i++;
+        }
+    }
+    return buffer;
 }

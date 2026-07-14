@@ -12,20 +12,23 @@ void kernel_main(void) {
     init_idt();
     pic_remap();
     __asm__ volatile("sti");
-    
-    // Clear the screen or print a boot message first
-    print("Open Shitting System Booted Successfully.\nType something: ");
+
+    // Clear screen first, then print boot message
+    print("Open Shitting System Booted.\n");
+
+    // Create a 256-byte buffer in RAM to hold the typed string
+    char input_buffer[256];
 
     while(1) {
-        // Check our non-blocking buffer
-        char c = keyboard_getchar();
+        print("MehmetOS> ");
         
-        if (c != 0) {
-            // If a valid key was pulled from the buffer, print it out!
-            put_char(c, 0x07); 
-        } else {
-            // If no key is in the buffer, sleep the CPU until the next IRQ
-            __asm__ volatile("hlt");
-        }
+        // This blocks execution, handles typing, backspacing, 
+        // and returns only when you hit Enter!
+        readline(input_buffer, 256);
+
+        // Echo the final captured string back to the screen
+        print("You typed: ");
+        print(input_buffer);
+        print("\n");
     }
 }

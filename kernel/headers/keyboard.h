@@ -4,6 +4,7 @@
 #define BUFFER_SIZE 256
 
 void handle_keypress(unsigned char scancode);
-char keyboard_getchar();
+char keyboard_getchar(void);
+char* readline(char* buffer, unsigned int max_size);
 
 #endif
