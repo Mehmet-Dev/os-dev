@@ -1,4 +1,5 @@
 #include "headers/keyboard.h"
+#include "headers/io.h"
 #include "headers/vga.h"
 
 // global variables
@@ -87,6 +88,7 @@ char* readline(char* buffer, unsigned int max_size) {
         if(letter == '\n') {
             buffer[i] = '\0';
             put_char('\n', 0x07);
+            update_cursor();
             break;
         }
 
@@ -94,6 +96,7 @@ char* readline(char* buffer, unsigned int max_size) {
             if(i == 0) continue;
             backspace_trigger();
             i--;
+            update_cursor();
             buffer[i] = '\0';
             continue;
         }
@@ -102,6 +105,7 @@ char* readline(char* buffer, unsigned int max_size) {
             buffer[i] = letter;
             put_char(letter, 0x07);
             i++;
+            update_cursor();
         }
     }
     return buffer;

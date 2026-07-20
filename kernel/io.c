@@ -64,3 +64,16 @@ void pic_remap(void) {
     outb(0x00, 0x21);
     outb(0x00, 0xa1);
 }
+
+// Update the cursor
+void update_cursor(void) {
+    unsigned short current = get_current_offset() / 2;
+    
+    // sending high byte
+    outb(14, 0x3d4);
+    outb((current >> 8), 0x3d5);
+    
+    // sending low byte
+    outb(15, 0x3d4);
+    outb((current & 0xff), 0x3d5);
+}
