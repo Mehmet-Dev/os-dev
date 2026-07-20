@@ -69,4 +69,37 @@ char* strcpy(char* dest, const char* src) {
     return dest;
 }
 
+/// Copies source into destination buffer till N
+char* strncpy(char* dest, const char* src, int n) {
+    int i = 0;
 
+    while(src[i] != '\0' && i < n) {
+        dest[i] = src[i];
+        i++;
+    }
+
+    for(; i < n; i++) {
+        dest[i] = '\0';
+    }
+
+    return dest;
+}
+
+/// Fills a block of memory with a specific byte.
+void* memset(void* dest, int val, int n) {
+    unsigned char* destination = (unsigned char*)dest;
+
+    for(int i = 0; i < n; i++) destination[i] = (unsigned char)val;
+
+    return destination;
+}
+
+/// Copies a portion from src to dest
+void* memcpy(void* dest, const void* src, int n) {
+    unsigned char* destination = (unsigned char*)dest;
+    const unsigned char* source = (const unsigned char*)src;
+
+    for(int i = 0; i < n; i++) destination[i] = source[i];
+
+    return destination;
+}
